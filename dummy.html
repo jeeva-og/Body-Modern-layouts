@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Story Section</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* Story section styles */
+    .story-section {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      white-space: nowrap;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .story-item {
+      position: relative;
+      display: inline-block;
+      width: 100vw;
+      height: 100vh;
+      scroll-snap-align: center;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      opacity: 0.5;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .story-item.active {
+      opacity: 1;
+    }
+
+    .story-item h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .story-item p {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .story-item:nth-child(1) {
+      background-color: #ff6b6b;
+    }
+
+    .story-item:nth-child(2) {
+      background-color: #ffa500;
+    }
+
+    .story-item:nth-child(3) {
+      background-color: #9b59b6;
+    }
+
+    .story-item:nth-child(odd)::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    .story-item:nth-child(even)::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.4);
+      z-index: -1;
+    }
+
+    .user-image {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .user-image.active {
+      opacity: 1;
+      transform: translateY(-50%) translateX(20px);
+    }
+
+    /* Hover effects */
+    .story-item:hover h2 {
+      transform: translateX(-10px);
+      transition: transform 0.3s ease-out;
+    }
+
+    .story-item:hover p {
+      transform: translateX(10px);
+      transition: transform 0.3s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="story-section">
+    <div class="story-item" style="background-image: url('https://via.placeholder.com/1920x1080/ff6b6b/ffffff');">
+      <h2>Story Headline 1</h2>
+      <p>This is the first story item with a captivating description.</p>
+    </div>
+    <div class="story-item" style="background-image: url('https://via.placeholder.com/1920x1080/ffa500/ffffff');">
+      <h2>Story Headline 2</h2>
+      <p>This is the second story item with an intriguing description.</p>
+    </div>
+    <div class="story-item" style="background-image: url('https://via.placeholder.com/1920x1080/9b59b6/ffffff');">
+      <h2>Story Headline 3</h2>
+      <p>This is the third story item with an engaging description.</p>
+    </div>
+  </div>
+
+  <div class="user-image" style="background-image: url('https://via.placeholder.com/80/ffffff/000000?text=User');">
+  </div>
+
+  <script>
+    const storySection = document.querySelector('.story-section');
+    const storyItems = document.querySelectorAll('.story-item');
+    const userImage = document.querySelector('.user-image');
+
+    let isScrolling = false;
+
+    storySection.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const currentIndex = getCurrentSlideIndex();
+      const targetIndex = event.deltaY > 0 ? currentIndex + 1 : currentIndex - 1;
+
+      if (targetIndex >= 0 && targetIndex < storyItems.length) {
+        storyItems[targetIndex].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+
+      updateActiveItem();
+      updateUserImage();
+    });
+
+    function getCurrentSlideIndex() {
+      const scrollLeft = storySection.scrollLeft;
+      let currentIndex = 0;
+
+      storyItems.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        if (rect.left >= 0 && rect.left <= window.innerWidth) {
+          currentIndex = index;
+        }
+      });
+
+      return currentIndex;
+    }
+
+    function updateActiveItem() {
+      const currentIndex = getCurrentSlideIndex();
+
+      storyItems.forEach((item, index) => {
+        item.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    function updateUserImage() {
+      const scrollLeft = storySection.scrollLeft;
+      userImage.classList.toggle('active', scrollLeft > 0);
+    }
+  </script>
+</body>
+</html>
