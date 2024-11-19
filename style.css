@@ -10,8 +10,8 @@ body {
 
 #skills {
   background: linear-gradient(135deg, #f6f9fc 0%, #f1f4f9 100%);
-  padding-top: 2rem;
-  height: 80vh;
+  padding: 3rem 0rem;
+  height: auto;
 }
 
 .skills-container {
